@@ -49,7 +49,8 @@
 
 {{template "macro.tpl" .}}
 
-  {{range .Pages -}}
-    \include{ {{- .Name -}} }
-  {{end}}
+  \include{sorted}
+% {{range .Pages -}}
+%   \include{ {{- .Name -}} }
+% {{end}}
 \end{document}

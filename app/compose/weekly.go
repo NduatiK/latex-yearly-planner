@@ -28,8 +28,8 @@ func Weekly(cfg config.Config, tpls []string) (page.Modules, error) {
 			},
 
 			SortIndex: page.SortWith(
-				week.Quarters.Numbers()[0],
-				int(week.Months[0].Month)%4,
+				week.Quarters.Numbers()[0]-1,
+				int(week.Months[0].Month-1)%3,
 				week.WeekNumberInt(),
 				-1,
 				0,

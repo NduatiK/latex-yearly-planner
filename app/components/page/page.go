@@ -31,8 +31,14 @@ type Module struct {
 	SortIndex string
 }
 
+func Min(x, y int) int {
+	if x > y {
+		return y
+	}
+	return x
+}
 func SortWith(quarter int, monthInQuarter int, weekInYear int, dayInYear int, offset int) string {
-	sorter := fmt.Sprintf("Q%03d", quarter+1)
+	sorter := fmt.Sprintf("Q%03d", Min(quarter+1, 4))
 
 	if monthInQuarter >= 0 {
 		sorter += fmt.Sprintf("M%03d", monthInQuarter)
@@ -45,6 +51,15 @@ func SortWith(quarter int, monthInQuarter int, weekInYear int, dayInYear int, of
 			}
 		}
 	}
+
+	if offset >= 0 {
+		sorter += fmt.Sprintf("-%05d", offset)
+	}
+
+	return sorter
+}
+func SortWithFooter(footerIdx int, Name string, offset int) string {
+	sorter := fmt.Sprintf("Z%03d-%s", footerIdx, Name)
 
 	if offset >= 0 {
 		sorter += fmt.Sprintf("-%05d", offset)

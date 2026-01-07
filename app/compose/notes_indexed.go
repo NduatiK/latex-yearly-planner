@@ -25,11 +25,9 @@ func NotesIndexed(cfg config.Config, tpls []string) (page.Modules, error) {
 				"BreadcrumbExtra": index.PrevNext(idx).WithTopRightCorner(cfg.ClearTopRightCorner),
 				"DottedExtra":     dottedExtra(cfg.ClearTopRightCorner, false, true, false, nil, 0),
 			},
-			SortIndex: page.SortWith(
-				5,
-				-3,
-				-1,
-				-1,
+			SortIndex: page.SortWithFooter(
+				2,
+				"notes-idx",
 				idx,
 			),
 		})
@@ -51,11 +49,9 @@ func NotesIndexed(cfg config.Config, tpls []string) (page.Modules, error) {
 						WithTopRightCorner(cfg.ClearTopRightCorner),
 					"DottedExtra": dottedExtra(cfg.ClearTopRightCorner, false, false, idxPage == 0 && noteIndex == 0, nil, idxPage+1),
 				},
-				SortIndex: page.SortWith(
-					6,
-					-1,
-					-1,
-					-1,
+				SortIndex: page.SortWithFooter(
+					3,
+					"notes",
 					100*(idxPage)+(noteIndex),
 				),
 			})

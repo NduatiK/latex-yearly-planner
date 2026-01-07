@@ -37,6 +37,11 @@ func New() *cli.App {
 	}
 }
 
+type FileModule struct {
+	module page.Module
+	file   config.Page
+}
+
 func action(c *cli.Context) error {
 	var (
 		fn  Composer
@@ -63,6 +68,8 @@ func action(c *cli.Context) error {
 	if err = ioutil.WriteFile("out/"+RootFilename(pathConfigs[len(pathConfigs)-1]), wr.Bytes(), 0600); err != nil {
 		return fmt.Errorf("ioutil write file: %w", err)
 	}
+
+	allModules := []FileModule{}
 
 	for _, file := range cfg.Pages {
 		wr.Reset()
@@ -99,31 +106,29 @@ func action(c *cli.Context) error {
 
 		// TODO: Sort modules
 		//
-		fmt.Println("FlattenModules")
 
-		allModules := FlattenModules(mom)
+		allModules = append(allModules, FlattenModules(mom, file)...)
+	}
 
-		for _, mod := range allModules {
-			// for j, mod := range allModules {
-			fmt.Println(mod.SortIndex)
-			// if err = t.Execute(wr, mod.Tpl, mod); err != nil {
-			// 	return fmt.Errorf("execute %s on %s: %w", file.RenderBlocks[j].FuncName, mod.Tpl, err)
-			// }
-		}
+	sort.Slice(allModules, func(i, j int) bool {
+		return allModules[i].module.SortIndex < allModules[j].module.SortIndex
+	})
 
-		// for i := 0; i < allLen; i++ {
-		// 	for j, mod := range mom {
-		// 		if err = t.Execute(wr, mod[i].Tpl, mod[i]); err != nil {
-		// 			return fmt.Errorf("execute %s on %s: %w", file.RenderBlocks[j].FuncName, mod[i].Tpl, err)
-		// 		}
-		// 	}
-		// }
+	wr.Reset()
+	// Get a module
+	for j, mod := range allModules {
+		// wr.Reset()
 
-		if err = ioutil.WriteFile("out/"+file.Name+".tex", wr.Bytes(), 0600); err != nil {
-			return fmt.Errorf("ioutil write file: %w", err)
+		// Render the template
+		fmt.Println(mod.module.SortIndex)
+		if err = t.Execute(wr, mod.module.Tpl, mod.module); err != nil {
+			return fmt.Errorf("execute %s on %s: %w", mod.file.RenderBlocks[j].FuncName, mod.module.Tpl, err)
 		}
 	}
 
+	if err = ioutil.WriteFile("out/sorted.tex", wr.Bytes(), 0600); err != nil {
+		return fmt.Errorf("ioutil write file: %w", err)
+	}
 	return nil
 }
 
@@ -171,15 +176,13 @@ func filterUniqueModules(array []page.Module) []page.Module {
 	return filtered
 }
 
-func FlattenModules(mom []page.Modules) page.Modules {
-	var res page.Modules
+func FlattenModules(mom []page.Modules, config config.Page) []FileModule {
+	var res []FileModule
 	for _, list := range mom {
-		res = append(res, list...)
+		for _, mod := range list {
+			res = append(res, FileModule{mod, config})
+		}
 	}
-
-	sort.Slice(res, func(i, j int) bool {
-		return res[i].SortIndex < res[j].SortIndex
-	})
 
 	return res
 }

@@ -8,7 +8,7 @@ import (
 
 var Daily = DailyStuff("", "", page.WeekModule, 0)
 var DailyReflect = DailyStuff("Reflect", "Reflect", page.WeekModule, 1)
-var DailyNotes = DailyStuff("More", "Notes", page.DailyNotesModule, 0)
+var DailyNotes = DailyStuff("More", "Notes", page.DailyNotesModule, 9999)
 
 func DailyStuff(prefix, leaf string, group page.ModuleType, offset int) func(cfg config.Config, tpls []string) (page.Modules, error) {
 	return func(cfg config.Config, tpls []string) (page.Modules, error) {
@@ -21,6 +21,21 @@ func DailyStuff(prefix, leaf string, group page.ModuleType, offset int) func(cfg
 					for _, day := range week.Days {
 						if day.Time.IsZero() {
 							continue
+						}
+
+						sorter := page.SortWith(
+							quarterIndex,
+							monthIndex,
+							week.WeekNumberInt(),
+							day.Time.Day(),
+							offset,
+						)
+
+						if group == page.DailyNotesModule {
+							sorter = page.SortWithFooter(1,
+								"daily-note",
+								int(day.Time.Month())*1000+int(day.Time.Day()),
+							)
 						}
 
 						modules = append(modules, page.Module{
@@ -39,13 +54,7 @@ func DailyStuff(prefix, leaf string, group page.ModuleType, offset int) func(cfg
 								"BreadcrumbExtra": day.PrevNext(prefix).WithTopRightCorner(cfg.ClearTopRightCorner),
 								"DottedExtra":     dottedExtra(cfg.ClearTopRightCorner, false, false, false, week, 0),
 							},
-							SortIndex: page.SortWith(
-								quarterIndex,
-								monthIndex,
-								week.WeekNumberInt(),
-								day.Time.Day(),
-								offset,
-							),
+							SortIndex: sorter,
 						})
 					}
 				}
