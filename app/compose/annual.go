@@ -12,23 +12,25 @@ import (
 func Annual(cfg config.Config, tpls []string) (page.Modules, error) {
 	year := cal.NewYear(cfg.WeekStart, cfg.Year)
 
-	return page.Modules{{
-		Cfg: cfg,
-		Tpl: tpls[0],
-		Body: map[string]interface{}{
-			"Year":         year,
-			"Breadcrumb":   year.Breadcrumb(),
-			"HeadingMOS":   year.HeadingMOS(),
-			"SideQuarters": year.SideQuarters(0),
-			"SideMonths":   year.SideMonths(0),
-			"Extra": header.Items{header.NewTextItem("Notes").RefText("Notes Index")}.
-				WithTopRightCorner(cfg.ClearTopRightCorner),
-			"Extra2": extra2(cfg.ClearTopRightCorner, true, false, nil, 0),
-		},
-	}}, nil
+	return page.Modules{
+		page.Module{
+			Cfg: cfg,
+			Tpl: tpls[0],
+			Body: map[string]interface{}{
+				"Year":         year,
+				"Breadcrumb":   year.Breadcrumb(),
+				"HeadingMOS":   year.HeadingMOS(),
+				"SideQuarters": year.SideQuarters(0),
+				"SideMonths":   year.SideMonths(0),
+				"BreadcrumbExtra": header.Items{header.NewTextItem("Notes").RefText("Notes Index")}.
+					WithTopRightCorner(cfg.ClearTopRightCorner),
+				"DottedExtra": dottedExtra(cfg.ClearTopRightCorner, true, false, false, nil, 0),
+			},
+			SortIndex: "1-Annual",
+		}}, nil
 }
 
-func extra2(ctrc, sel1, sel2 bool, week *cal.Week, idxPage int) header.Items {
+func dottedExtra(ctrc, sel1, sel2 bool, inboxPage bool, week *cal.Week, idxPage int) header.Items {
 	items := make(header.Items, 0, 3)
 
 	if week != nil {
@@ -47,6 +49,8 @@ func extra2(ctrc, sel1, sel2 bool, week *cal.Week, idxPage int) header.Items {
 	} else {
 		items = append(items, header.NewCellItem("Notes").Refer("Notes Index").Selected(sel2))
 	}
+
+	items = append(items, header.NewCellItem("Inbox").Refer("Inbox").Selected(inboxPage))
 
 	return items.WithTopRightCorner(ctrc)
 }

@@ -1,8 +1,8 @@
 set -eo pipefail
 
 CURRENT_YEAR=$(date +"%Y")
-NEXT_YEAR=$((CURRENT_YEAR+1))
-# NEXT_YEAR=$((CURRENT_YEAR))
+NEXT_YEAR=$((CURRENT_YEAR))
+# NEXT_YEAR=$((CURRENT_YEAR+1))
 
 _configurations=(
   2 "cfg/base.yaml,cfg/rm2.base.yaml,cfg/template_months_on_side.yaml,cfg/rm2.mos.default.yaml,cfg/rm2.mos.default.dailycal.yaml"           "rm2.mos.default.dailycal"

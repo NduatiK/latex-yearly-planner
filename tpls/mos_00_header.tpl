@@ -1,6 +1,6 @@
 {{- .Body.HeadingMOS -}}
 {}\hfill%
-{\renewcommand{\arraystretch}{\myNumArrayStretch} {{ .Body.Extra2.Table false }} }%
+{\renewcommand{\arraystretch}{\myNumArrayStretch} {{ .Body.DottedExtra.Table false }} }%
 \medskip%
 \myLineThick%
 \marginnote{%

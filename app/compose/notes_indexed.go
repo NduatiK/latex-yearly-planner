@@ -17,19 +17,26 @@ func NotesIndexed(cfg config.Config, tpls []string) (page.Modules, error) {
 			Cfg: cfg,
 			Tpl: tpls[0],
 			Body: map[string]interface{}{
-				"Notes":        indexPage,
-				"Breadcrumb":   indexPage.Breadcrumb(cfg.Year, idx),
-				"HeadingMOS":   indexPage.HeadingMOS(idx+1, len(index.Pages)),
-				"SideQuarters": year.SideQuarters(0),
-				"SideMonths":   year.SideMonths(0),
-				"Extra":        index.PrevNext(idx).WithTopRightCorner(cfg.ClearTopRightCorner),
-				"Extra2":       extra2(cfg.ClearTopRightCorner, false, true, nil, 0),
+				"Notes":           indexPage,
+				"Breadcrumb":      indexPage.Breadcrumb(cfg.Year, idx),
+				"HeadingMOS":      indexPage.HeadingMOS(idx+1, len(index.Pages)),
+				"SideQuarters":    year.SideQuarters(0),
+				"SideMonths":      year.SideMonths(0),
+				"BreadcrumbExtra": index.PrevNext(idx).WithTopRightCorner(cfg.ClearTopRightCorner),
+				"DottedExtra":     dottedExtra(cfg.ClearTopRightCorner, false, true, false, nil, 0),
 			},
+			SortIndex: page.SortWith(
+				5,
+				-3,
+				-1,
+				-1,
+				idx,
+			),
 		})
 	}
 
 	for idxPage, notes := range index.Pages {
-		for _, nt := range notes {
+		for noteIndex, nt := range notes {
 			modules = append(modules, page.Module{
 				Cfg: cfg,
 				Tpl: tpls[1],
@@ -39,11 +46,18 @@ func NotesIndexed(cfg config.Config, tpls []string) (page.Modules, error) {
 					"HeadingMOS":   nt.HeadingMOS(idxPage),
 					"SideQuarters": year.SideQuarters(0),
 					"SideMonths":   year.SideMonths(0),
-					"Extra": nt.
+					"BreadcrumbExtra": nt.
 						PrevNext(cfg.Layout.Numbers.NotesOnPage * cfg.Layout.Numbers.NotesIndexPages).
 						WithTopRightCorner(cfg.ClearTopRightCorner),
-					"Extra2": extra2(cfg.ClearTopRightCorner, false, false, nil, idxPage+1),
+					"DottedExtra": dottedExtra(cfg.ClearTopRightCorner, false, false, idxPage == 0 && noteIndex == 0, nil, idxPage+1),
 				},
+				SortIndex: page.SortWith(
+					6,
+					-1,
+					-1,
+					-1,
+					100*(idxPage)+(noteIndex),
+				),
 			})
 		}
 	}

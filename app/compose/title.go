@@ -12,5 +12,8 @@ func Title(cfg config.Config, tpls []string) (page.Modules, error) {
 		return nil, fmt.Errorf("exppected one tpl, got %d %v", len(tpls), tpls)
 	}
 
-	return page.Modules{{Cfg: cfg, Tpl: tpls[0]}}, nil
+	return page.Modules{{Cfg: cfg, Tpl: tpls[0],
+
+		SortIndex: "0-Title",
+	}}, nil
 }

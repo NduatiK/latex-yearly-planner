@@ -1,6 +1,6 @@
 {\noindent\Large\renewcommand{\arraystretch}{\myNumArrayStretch}
 {{- .Body.Breadcrumb -}}
 \hfill%
-{{ .Body.Extra.Table false -}}
+{{ .Body.BreadcrumbExtra.Table false -}}
 }
 \myLineThick\medskip

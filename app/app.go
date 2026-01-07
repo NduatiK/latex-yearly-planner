@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/kudrykv/latex-yearly-planner/app/components/page"
@@ -89,7 +90,6 @@ func action(c *cli.Context) error {
 		if len(mom) == 0 {
 			return fmt.Errorf("modules of modules must have some modules")
 		}
-
 		allLen := len(mom[0])
 		for _, mods := range mom {
 			if len(mods) != allLen {
@@ -97,13 +97,27 @@ func action(c *cli.Context) error {
 			}
 		}
 
-		for i := 0; i < allLen; i++ {
-			for j, mod := range mom {
-				if err = t.Execute(wr, mod[i].Tpl, mod[i]); err != nil {
-					return fmt.Errorf("execute %s on %s: %w", file.RenderBlocks[j].FuncName, mod[i].Tpl, err)
-				}
-			}
+		// TODO: Sort modules
+		//
+		fmt.Println("FlattenModules")
+
+		allModules := FlattenModules(mom)
+
+		for _, mod := range allModules {
+			// for j, mod := range allModules {
+			fmt.Println(mod.SortIndex)
+			// if err = t.Execute(wr, mod.Tpl, mod); err != nil {
+			// 	return fmt.Errorf("execute %s on %s: %w", file.RenderBlocks[j].FuncName, mod.Tpl, err)
+			// }
 		}
+
+		// for i := 0; i < allLen; i++ {
+		// 	for j, mod := range mom {
+		// 		if err = t.Execute(wr, mod[i].Tpl, mod[i]); err != nil {
+		// 			return fmt.Errorf("execute %s on %s: %w", file.RenderBlocks[j].FuncName, mod[i].Tpl, err)
+		// 		}
+		// 	}
+		// }
 
 		if err = ioutil.WriteFile("out/"+file.Name+".tex", wr.Bytes(), 0600); err != nil {
 			return fmt.Errorf("ioutil write file: %w", err)
@@ -155,4 +169,17 @@ func filterUniqueModules(array []page.Module) []page.Module {
 	}
 
 	return filtered
+}
+
+func FlattenModules(mom []page.Modules) page.Modules {
+	var res page.Modules
+	for _, list := range mom {
+		res = append(res, list...)
+	}
+
+	sort.Slice(res, func(i, j int) bool {
+		return res[i].SortIndex < res[j].SortIndex
+	})
+
+	return res
 }

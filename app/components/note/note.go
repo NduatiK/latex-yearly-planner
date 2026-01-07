@@ -94,14 +94,18 @@ func (n Note) PrevNext(notes int) header.Items {
 }
 
 func (n Note) HeadingMOS(page int) string {
-	if n.Number == 1 {
-		return tex.Hypertarget(n.ref(), "") + tex.ResizeBoxW(`\myLenHeaderResizeBox`, `Inbox`+`\myDummyRoot`)
+	title := `Inbox`
+	if n.Number > 1 {
+		title = `Note ` + strconv.Itoa(n.Number-1)
 	}
 
-	num := strconv.Itoa(n.Number - 1)
-	return tex.Hypertarget(n.ref(), "") + tex.ResizeBoxW(`\myLenHeaderResizeBox`, `Note `+num+`\myDummyRoot`)
+	return tex.Hypertarget(n.ref(), "") + tex.ResizeBoxW(`\myLenHeaderResizeBox`, title+`\myDummyRoot`)
 }
 
 func (n Note) ref() string {
+	if n.Number == 1 {
+		return `Inbox`
+	}
+
 	return "Note " + strconv.Itoa(n.Number)
 }

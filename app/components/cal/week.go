@@ -120,7 +120,7 @@ func selectStartWeek(year int, weekStart time.Weekday) Day {
 }
 
 func (w *Week) WeekNumber(large interface{}) string {
-	wn := w.weekNumber()
+	wn := w.WeekNumberInt()
 	larg, _ := large.(bool)
 
 	itoa := strconv.Itoa(wn)
@@ -134,7 +134,7 @@ func (w *Week) WeekNumber(large interface{}) string {
 	return hyper.Link(ref, text)
 }
 
-func (w *Week) weekNumber() int {
+func (w *Week) WeekNumberInt() int {
 	_, wn := w.Days[0].Time.ISOWeek()
 
 	for _, t := range w.Days {
@@ -151,7 +151,7 @@ func (w *Week) Breadcrumb() string {
 		header.NewIntItem(w.Year.Number),
 		w.QuartersBreadcrumb(),
 		w.MonthsBreadcrumb(),
-		header.NewTextItem("Week " + strconv.Itoa(w.weekNumber())).RefText(w.ref()).Ref(true),
+		header.NewTextItem("Week " + strconv.Itoa(w.WeekNumberInt())).RefText(w.ref()).Ref(true),
 	}.Table(true)
 }
 
@@ -187,12 +187,12 @@ func (w *Week) PrevNext() header.Items {
 	items := header.Items{}
 
 	if w.PrevExists() {
-		wn := w.Prev().weekNumber()
+		wn := w.Prev().WeekNumberInt()
 		items = append(items, header.NewTextItem("Week "+strconv.Itoa(wn)))
 	}
 
 	if w.NextExists() {
-		wn := w.Next().weekNumber()
+		wn := w.Next().WeekNumberInt()
 		items = append(items, header.NewTextItem("Week "+strconv.Itoa(wn)))
 	}
 
@@ -241,7 +241,7 @@ func (w *Week) MonthsBreadcrumb() header.ItemsGroup {
 
 func (w *Week) ref() string {
 	prefix := ""
-	wn := w.weekNumber()
+	wn := w.WeekNumberInt()
 	rm := w.rightMonth()
 	ry := w.rightYear()
 
@@ -295,7 +295,7 @@ func (w *Week) HeadingMOS() string {
 }
 
 func (w *Week) Name() string {
-	return "Week " + strconv.Itoa(w.weekNumber())
+	return "Week " + strconv.Itoa(w.WeekNumberInt())
 }
 
 func (w *Week) Target() string {
