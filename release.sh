@@ -11,14 +11,15 @@ _configurations=(
 _configurations_len=${#_configurations[@]}
 
 function createPDFs() {
-  for _year in $CURRENT_YEAR $NEXT_YEAR; do
+  _year = $CURRENT_YEAR
+  # for _year in $CURRENT_YEAR $NEXT_YEAR; do
     for _idx in $(seq 0 3 $((_configurations_len-1))); do
       _passes=${_configurations[_idx]}
       _cfg=${_configurations[_idx+1]}
       _name=${_configurations[_idx+2]}
 
       PLANNER_YEAR="${_year}" PASSES="${_passes}" CFG="${_cfg}" NAME="${_name}.${_year}" ./single.sh
-    done
+    # done
   done
 }
 
@@ -29,9 +30,6 @@ function mvDefaultTo() {
   done
 }
 
-function _restore() {
-  git restore cfg/base.yaml
-}
 
 _combinations=(
   ""                        "dotted.default.ampm.sun"
@@ -50,6 +48,4 @@ for _idx in $(seq 0 2 $((_combinations_len-1))); do
   createPDFs
   mvDefaultTo "${_mvTo}"
   mv ./*pdf result
-
-  _restore
 done
