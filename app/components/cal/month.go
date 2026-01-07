@@ -136,6 +136,6 @@ func (m *Month) ShortName() string {
 
 func (m *Month) HeadingMOS() string {
 	return `\begin{tabular}{@{}l}
-  \resizebox{!}{\myLenHeaderResizeBox}{` + hyper.Target(m.Month.String(), m.Month.String()) + `\myDummyQ}
+  \resizebox{!}{\myLenHeaderResizeBox}{` + hyper.Target(m.Month.String(), m.Month.String()) + `\myDummyRoot}
 \end{tabular}`
 }

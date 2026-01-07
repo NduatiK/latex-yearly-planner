@@ -58,6 +58,6 @@ func (q *Quarter) Name() string {
 
 func (q *Quarter) HeadingMOS() string {
 	return ` \begin{tabular}{@{}l}
-  \resizebox{!}{\myLenHeaderResizeBox}{` + hyper.Target(q.Name(), q.Name()) + `}
+  \resizebox{!}{\myLenHeaderResizeBox}{` + hyper.Target(q.Name(), q.Name()) + `\myDummyRoot}
 \end{tabular}`
 }

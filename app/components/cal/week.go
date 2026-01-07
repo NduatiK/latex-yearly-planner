@@ -284,7 +284,7 @@ func (w *Week) HeadingMOS() string {
 		contents = append(contents, tex.Hyperlink(w.Prev().ref(), leftNavBox))
 	}
 
-	contents = append(contents, tex.ResizeBoxW(`\myLenHeaderResizeBox`, w.Target()))
+	contents = append(contents, tex.ResizeBoxW(`\myLenHeaderResizeBox`, w.Target()+`\myDummyRoot`))
 
 	if w.NextExists() {
 		rightNavBox := tex.ResizeBoxW(`\myLenHeaderResizeBox`, `$\rangle$`)

@@ -59,7 +59,10 @@ func (p Notes) ref(page int) string {
 }
 
 func (n Note) HyperLink() string {
-	return hyper.Link(n.ref(), fmt.Sprintf("%02d", n.Number))
+	if n.Number == 1 {
+		return hyper.Link(n.ref(), "Inbox")
+	}
+	return hyper.Link(n.ref(), fmt.Sprintf("%02d", n.Number-1))
 }
 
 func (n Note) Breadcrumb() string {
@@ -91,13 +94,12 @@ func (n Note) PrevNext(notes int) header.Items {
 }
 
 func (n Note) HeadingMOS(page int) string {
-	num := strconv.Itoa(n.Number)
-
 	if n.Number == 1 {
-		return tex.Hypertarget(n.ref(), "") + tex.ResizeBoxW(`\myLenHeaderResizeBox`, `Inbox`+`\myDummyQ`)
+		return tex.Hypertarget(n.ref(), "") + tex.ResizeBoxW(`\myLenHeaderResizeBox`, `Inbox`+`\myDummyRoot`)
 	}
 
-	return tex.Hypertarget(n.ref(), "") + tex.ResizeBoxW(`\myLenHeaderResizeBox`, `Note `+num+`\myDummyQ`)
+	num := strconv.Itoa(n.Number - 1)
+	return tex.Hypertarget(n.ref(), "") + tex.ResizeBoxW(`\myLenHeaderResizeBox`, `Note `+num+`\myDummyRoot`)
 }
 
 func (n Note) ref() string {
